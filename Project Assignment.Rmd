@@ -155,13 +155,13 @@ Out of Sample Error: 1 - 0.4378 = 56.22%
 ```{r}
 # Random Forest on training set 3 of 4 with no extra features.
 set.seed(123)
-model3 <- train(classe ~ ., method="rf",preProcess=c("center", "scale"), data=training3)
+model3 <- train(classe ~ ., method="rf", data=training3)
 
 # Predict on testing set 3 of 4 with no extra features.
 predictions <- predict(model3, newdata=testing3)
 confusionMatrix(predictions, testing3$classe)
 ```
-Random Forest with no extra feature delivers 100% accuracy on the 3rd testing set. This model will be used to predict on the testing set. 
+Random Forest with no extra feature delivers 100% accuracy on the 3rd testing set. This model will be used to predict on the final testing set. 
 
 Out of Sample Error: 1 - 1 = 0%
 
@@ -189,7 +189,9 @@ predict(model4, newdata=testing)
 ```
 
 <font size="3"><b>Conclusion</b></font><br>
-Even both model 3 and moedel 4 developed from Random Forest method giving 100% accuacy in testing set 3 and 4. But they still produce a slight difference result on the final 20 different test cases as shown below. Therefore, we can conclude that a model built with low or zero out of sample error can still prone to error when it is used to predicts in another brand new data set.   
 
-Model 3 - [1] B A B A A E D B A A B C B A E E A B B B
-Model 4 - [1] C A B A A E D D A A B C B A E E A B B B
+Model 3 - [1] B A B A A E D B A A B C B A E E A B B B<br>
+Model 4 - [1] C A B A A E D D A A B C B A E E A B B B<br>
+
+Even both model 3 and moedel 4 developed from Random Forest method giving 100% accuacy in testing set 3 and 4. But they still produce a slight difference result on the final 20 different test cases as shown above. Therefore, we can conclude that a model built with low or zero out of sample error can still prone to error when it is used to predicts in another brand new data set.   
+

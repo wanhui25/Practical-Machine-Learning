@@ -99,7 +99,7 @@ dim(training)</code></pre>
 <pre class="r"><code>summary(training$classe)</code></pre>
 <pre><code>##    A    B    C    D    E 
 ## 5580 3797 3422 3216 3607</code></pre>
-<p><font size="3"><b>Feature</b></font><br> After briefly inspecting the training set, I found many NA data and first seven columns that is not helpful for developing prediction model. Therefore, the following code is using to clearn the data.</p>
+<p><font size="3"><b>Feature</b></font><br> After briefly inspecting the training set, I found many NA data and first seven columns that are not helpful for developing prediction model. Therefore, the following code is to clearn the data.</p>
 <pre class="r"><code>NotNA &lt;- function(x) {
     as.vector(apply(x, 2, function(x) length(which(!is.na(x)))))
 }
@@ -139,73 +139,16 @@ colnames(training)</code></pre>
 ## [46] &quot;gyros_forearm_z&quot;      &quot;accel_forearm_x&quot;      &quot;accel_forearm_y&quot;     
 ## [49] &quot;accel_forearm_z&quot;      &quot;magnet_forearm_x&quot;     &quot;magnet_forearm_y&quot;    
 ## [52] &quot;magnet_forearm_z&quot;     &quot;classe&quot;</code></pre>
-<p>check covariates that have no variability</p>
-<pre class="r"><code>nsv &lt;- nearZeroVar(training, saveMetrics=TRUE)
-nsv</code></pre>
-<pre><code>##                      freqRatio percentUnique zeroVar   nzv
-## roll_belt             1.101904     6.7781062   FALSE FALSE
-## pitch_belt            1.036082     9.3772296   FALSE FALSE
-## yaw_belt              1.058480     9.9734991   FALSE FALSE
-## total_accel_belt      1.063160     0.1477933   FALSE FALSE
-## gyros_belt_x          1.058651     0.7134849   FALSE FALSE
-## gyros_belt_y          1.144000     0.3516461   FALSE FALSE
-## gyros_belt_z          1.066214     0.8612782   FALSE FALSE
-## accel_belt_x          1.055412     0.8357966   FALSE FALSE
-## accel_belt_y          1.113725     0.7287738   FALSE FALSE
-## accel_belt_z          1.078767     1.5237998   FALSE FALSE
-## magnet_belt_x         1.090141     1.6664968   FALSE FALSE
-## magnet_belt_y         1.099688     1.5187035   FALSE FALSE
-## magnet_belt_z         1.006369     2.3290184   FALSE FALSE
-## roll_arm             52.338462    13.5256345   FALSE FALSE
-## pitch_arm            87.256410    15.7323412   FALSE FALSE
-## yaw_arm              33.029126    14.6570176   FALSE FALSE
-## total_accel_arm       1.024526     0.3363572   FALSE FALSE
-## gyros_arm_x           1.015504     3.2769341   FALSE FALSE
-## gyros_arm_y           1.454369     1.9162165   FALSE FALSE
-## gyros_arm_z           1.110687     1.2638875   FALSE FALSE
-## accel_arm_x           1.017341     3.9598410   FALSE FALSE
-## accel_arm_y           1.140187     2.7367241   FALSE FALSE
-## accel_arm_z           1.128000     4.0362858   FALSE FALSE
-## magnet_arm_x          1.000000     6.8239731   FALSE FALSE
-## magnet_arm_y          1.056818     4.4439914   FALSE FALSE
-## magnet_arm_z          1.036364     6.4468454   FALSE FALSE
-## roll_dumbbell         1.022388    84.2065029   FALSE FALSE
-## pitch_dumbbell        2.277372    81.7449801   FALSE FALSE
-## yaw_dumbbell          1.132231    83.4828254   FALSE FALSE
-## total_accel_dumbbell  1.072634     0.2191418   FALSE FALSE
-## gyros_dumbbell_x      1.003268     1.2282132   FALSE FALSE
-## gyros_dumbbell_y      1.264957     1.4167771   FALSE FALSE
-## gyros_dumbbell_z      1.060100     1.0498420   FALSE FALSE
-## accel_dumbbell_x      1.018018     2.1659362   FALSE FALSE
-## accel_dumbbell_y      1.053061     2.3748853   FALSE FALSE
-## accel_dumbbell_z      1.133333     2.0894914   FALSE FALSE
-## magnet_dumbbell_x     1.098266     5.7486495   FALSE FALSE
-## magnet_dumbbell_y     1.197740     4.3012945   FALSE FALSE
-## magnet_dumbbell_z     1.020833     3.4451126   FALSE FALSE
-## roll_forearm         11.589286    11.0895933   FALSE FALSE
-## pitch_forearm        65.983051    14.8557741   FALSE FALSE
-## yaw_forearm          15.322835    10.1467740   FALSE FALSE
-## total_accel_forearm   1.128928     0.3567424   FALSE FALSE
-## gyros_forearm_x       1.059273     1.5187035   FALSE FALSE
-## gyros_forearm_y       1.036554     3.7763735   FALSE FALSE
-## gyros_forearm_z       1.122917     1.5645704   FALSE FALSE
-## accel_forearm_x       1.126437     4.0464784   FALSE FALSE
-## accel_forearm_y       1.059406     5.1116094   FALSE FALSE
-## accel_forearm_z       1.006250     2.9558659   FALSE FALSE
-## magnet_forearm_x      1.012346     7.7667924   FALSE FALSE
-## magnet_forearm_y      1.246914     9.5403119   FALSE FALSE
-## magnet_forearm_z      1.000000     8.5771073   FALSE FALSE
-## classe                1.469581     0.0254816   FALSE FALSE</code></pre>
-<p>NZV(Near zero variance) column shows ‘FALSE’ for all remaining variables in training set, therefore it is not necessary to remove any covariates due to lack of variability</p>
 <p><font size="3"><b>Algorithm</b></font><br> My plan of algorithm is to use both Classification Tree and Random Forest either with or without preprocessing and cross validation to find a prediction model with best accuracy, and use this model to predict on the testing set.</p>
-<p>Sine the training set is large (19622 entries) but testing set is small (20 entries). Then I decide to divide the training set into 4 equal dataset for the following 4 scenario, each dataset will be split into a training and testing set (60%:40%).</p>
+<p>Sine the training set is large (19622 entries) but testing set is small (20 entries). Then I decide to divide the training set into 4 equal dataset for the following 4 scenario, each dataset will be split into a training and testing set (60%:40%) for model developing and testing purpose.</p>
 <ol style="list-style-type: decimal">
 <li>Classification Tree without preprocessing and cross validation</li>
 <li>Classification Tree with preprocessing and cross validation</li>
 <li>Random Forest without preprocessing and cross validation</li>
 <li>Random Forest with preprocessing and cross validation</li>
 </ol>
-<pre class="r"><code>set.seed(123)
+<pre class="r"><code># Divide entire training set into 4 smaller data set
+set.seed(123)
 intrain&lt;- createDataPartition(y=training$classe, p=0.25, list=FALSE)
 training1 &lt;- training[intrain,]
 remainder &lt;- training[-intrain,]
@@ -238,29 +181,11 @@ testing4 &lt;- training4[-inTrain,]</code></pre>
 <p><font size="2"><b><I>Classification Tree</I></b></font><br> 1. Classification Tree without preprocessing and cross validation</p>
 <pre class="r"><code># Classification Tree on training set 1 of 4 with no extra features.
 set.seed(123)
-modFit &lt;- train(classe ~ ., data = training1, method=&quot;rpart&quot;)
-print(modFit, digits=3)</code></pre>
-<pre><code>## CART 
-## 
-## 2946 samples
-##   52 predictor
-##    5 classes: 'A', 'B', 'C', 'D', 'E' 
-## 
-## No pre-processing
-## Resampling: Bootstrapped (25 reps) 
-## Summary of sample sizes: 2946, 2946, 2946, 2946, 2946, 2946, ... 
-## Resampling results across tuning parameters:
-## 
-##   cp      Accuracy  Kappa   Accuracy SD  Kappa SD
-##   0.0424  0.507     0.3636  0.0603       0.0979  
-##   0.0462  0.446     0.2626  0.0717       0.1228  
-##   0.1185  0.322     0.0584  0.0394       0.0623  
-## 
-## Accuracy was used to select the optimal model using  the largest value.
-## The final value used for the model was cp = 0.0424.</code></pre>
-<pre class="r"><code># Predict on testing set 1 of 4 with no extra features.
-predictions &lt;- predict(modFit, newdata=testing1)
-print(confusionMatrix(predictions, testing1$classe), digits=4)</code></pre>
+model1 &lt;- train(classe ~ ., method=&quot;rpart&quot;, data = training1)
+
+# Predict on testing set 1 of 4 with no extra features.
+predictions &lt;- predict(model1, newdata=testing1)
+confusionMatrix(predictions, testing1$classe)</code></pre>
 <pre><code>## Confusion Matrix and Statistics
 ## 
 ##           Reference
@@ -299,29 +224,11 @@ print(confusionMatrix(predictions, testing1$classe), digits=4)</code></pre>
 </ol>
 <pre class="r"><code># Classification Tree on training set 2 of 4 with preprocessing and cross validation
 set.seed(123)
-modFit &lt;- train(classe ~ .,  preProcess=c(&quot;center&quot;, &quot;scale&quot;), trControl=trainControl(method = &quot;cv&quot;, number = 4), data = training2, method=&quot;rpart&quot;)
-print(modFit, digits=3)</code></pre>
-<pre><code>## CART 
-## 
-## 2917 samples
-##   52 predictor
-##    5 classes: 'A', 'B', 'C', 'D', 'E' 
-## 
-## Pre-processing: centered (52), scaled (52) 
-## Resampling: Cross-Validated (4 fold) 
-## Summary of sample sizes: 2189, 2188, 2186, 2188 
-## Resampling results across tuning parameters:
-## 
-##   cp      Accuracy  Kappa   Accuracy SD  Kappa SD
-##   0.0467  0.464     0.2912  0.0753       0.1251  
-##   0.0503  0.450     0.2662  0.0711       0.1146  
-##   0.1155  0.322     0.0574  0.0432       0.0669  
-## 
-## Accuracy was used to select the optimal model using  the largest value.
-## The final value used for the model was cp = 0.0467.</code></pre>
-<pre class="r"><code># predict on testing set 2 of 4 with both preprocessing and cross validation.
-predictions &lt;- predict(modFit, newdata=testing2)
-print(confusionMatrix(predictions, testing2$classe), digits=4)</code></pre>
+model2 &lt;- train(classe ~ ., method=&quot;rpart&quot;,  preProcess=c(&quot;center&quot;, &quot;scale&quot;), trControl=trainControl(method = &quot;cv&quot;, number = 4), data = training2)
+
+# predict on testing set 2 of 4 with both preprocessing and cross validation.
+predictions &lt;- predict(model2, newdata=testing2)
+confusionMatrix(predictions, testing2$classe)</code></pre>
 <pre><code>## Confusion Matrix and Statistics
 ## 
 ##           Reference
@@ -358,29 +265,11 @@ print(confusionMatrix(predictions, testing2$classe), digits=4)</code></pre>
 <p><font size="2"><b><I>Random Forest</I></b></font><br> 3. Random Forest without preprocessing and cross validation</p>
 <pre class="r"><code># Random Forest on training set 3 of 4 with no extra features.
 set.seed(123)
-modFit &lt;- train(classe ~ ., method=&quot;rf&quot;,preProcess=c(&quot;center&quot;, &quot;scale&quot;), data=training3)
-print(modFit, digits=3)</code></pre>
-<pre><code>## Random Forest 
-## 
-## 2960 samples
-##   52 predictor
-##    5 classes: 'A', 'B', 'C', 'D', 'E' 
-## 
-## Pre-processing: centered (52), scaled (52) 
-## Resampling: Bootstrapped (25 reps) 
-## Summary of sample sizes: 2960, 2960, 2960, 2960, 2960, 2960, ... 
-## Resampling results across tuning parameters:
-## 
-##   mtry  Accuracy  Kappa  Accuracy SD  Kappa SD
-##    2    0.945     0.930  0.00711      0.0090  
-##   27    0.950     0.936  0.00860      0.0109  
-##   52    0.936     0.920  0.01107      0.0140  
-## 
-## Accuracy was used to select the optimal model using  the largest value.
-## The final value used for the model was mtry = 27.</code></pre>
-<pre class="r"><code># Predict on testing set 3 of 4 with no extra features.
-predictions &lt;- predict(modFit, newdata=testing3)
-print(confusionMatrix(predictions, testing3$classe), digits=4)</code></pre>
+model3 &lt;- train(classe ~ ., method=&quot;rf&quot;, data=training3)
+
+# Predict on testing set 3 of 4 with no extra features.
+predictions &lt;- predict(model3, newdata=testing3)
+confusionMatrix(predictions, testing3$classe)</code></pre>
 <pre><code>## Confusion Matrix and Statistics
 ## 
 ##           Reference
@@ -412,40 +301,22 @@ print(confusionMatrix(predictions, testing3$classe), digits=4)</code></pre>
 ## Detection Rate         0.2731      0.2   0.1588   0.1798   0.1882
 ## Detection Prevalence   0.2731      0.2   0.1588   0.1798   0.1882
 ## Balanced Accuracy      1.0000      1.0   1.0000   1.0000   1.0000</code></pre>
-<p>Random Forest with no extra feature delivers 100% accuracy on the 3rd testing set. This model will be used to predict on the testing set.</p>
+<p>Random Forest with no extra feature delivers 100% accuracy on the 3rd testing set. This model will be used to predict on the final testing set.</p>
 <p>Out of Sample Error: 1 - 1 = 0%</p>
 <pre class="r"><code># Use this model against the testing set
-print(predict(modFit, newdata=testing))</code></pre>
-<pre><code>##  [1] B A B A A E D B A A B C B A E E A B B B
+predict(model3, newdata=testing)</code></pre>
+<pre><code>##  [1] B A B A A E D D A A B C B A E E A B B B
 ## Levels: A B C D E</code></pre>
 <ol start="4" style="list-style-type: decimal">
 <li>Random Forest with preprocessing and cross validation</li>
 </ol>
 <pre class="r"><code># Random Forest on training set 4 of 4 with both preprocessing and cross validation.
 set.seed(123)
-modFit &lt;- train(classe ~ ., method=&quot;rf&quot;, preProcess=c(&quot;center&quot;, &quot;scale&quot;), trControl=trainControl(method = &quot;cv&quot;, number = 4), data=training4)
-print(modFit, digits=3)</code></pre>
-<pre><code>## Random Forest 
-## 
-## 2958 samples
-##   52 predictor
-##    5 classes: 'A', 'B', 'C', 'D', 'E' 
-## 
-## Pre-processing: centered (52), scaled (52) 
-## Resampling: Cross-Validated (4 fold) 
-## Summary of sample sizes: 2219, 2218, 2218, 2219 
-## Resampling results across tuning parameters:
-## 
-##   mtry  Accuracy  Kappa  Accuracy SD  Kappa SD
-##    2    0.950     0.936  0.00608      0.00768 
-##   27    0.957     0.946  0.00698      0.00883 
-##   52    0.949     0.935  0.00570      0.00719 
-## 
-## Accuracy was used to select the optimal model using  the largest value.
-## The final value used for the model was mtry = 27.</code></pre>
-<pre class="r"><code># predict on testing set 4 of 4 with both preprocessing and cross validation.
-predictions &lt;- predict(modFit, newdata=testing4)
-print(confusionMatrix(predictions, testing4$classe), digits=4)</code></pre>
+model4 &lt;- train(classe ~ ., method=&quot;rf&quot;, preProcess=c(&quot;center&quot;, &quot;scale&quot;), trControl=trainControl(method = &quot;cv&quot;, number = 4), data=training4)
+
+# predict on testing set 4 of 4 with both preprocessing and cross validation.
+predictions &lt;- predict(model4, newdata=testing4)
+confusionMatrix(predictions, testing4$classe)</code></pre>
 <pre><code>## Confusion Matrix and Statistics
 ## 
 ##           Reference
@@ -479,10 +350,12 @@ print(confusionMatrix(predictions, testing4$classe), digits=4)</code></pre>
 ## Balanced Accuracy      1.0000   1.0000   1.0000   1.0000   1.0000</code></pre>
 <p>Random Forest with preprocessing and cross validation predication also gives the best accuracy 100%.Therefore I will use model 3 and 4 to predict on the testing set given in the project.</p>
 <p>Out of Sample Error: 1 - 100% = 0%</p>
-<pre class="r"><code>print(predict(modFit, newdata=testing))</code></pre>
+<pre class="r"><code>predict(model4, newdata=testing)</code></pre>
 <pre><code>##  [1] C A B A A E D D A A B C B A E E A B B B
 ## Levels: A B C D E</code></pre>
-<p><font size="3"><b>Result</b></font><br></p>
+<p><font size="3"><b>Conclusion</b></font><br></p>
+<p>Model 3 - [1] B A B A A E D B A A B C B A E E A B B B<br> Model 4 - [1] C A B A A E D D A A B C B A E E A B B B<br></p>
+<p>Even both model 3 and moedel 4 developed from Random Forest method giving 100% accuacy in testing set 3 and 4. But they still produce a slight difference result on the final 20 different test cases as shown above. Therefore, we can conclude that a model built with low or zero out of sample error can still prone to error when it is used to predicts in another brand new data set.</p>
 
 
 </div>
